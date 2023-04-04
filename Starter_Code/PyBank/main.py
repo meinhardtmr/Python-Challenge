@@ -5,12 +5,12 @@ import os
 import csv
 from operator import itemgetter
 
+#Procedure to write output to screen and file
 def write_line(line, writer):
     print(line)
     print()
     writer.writerow([line])
     writer.writerow([])
-
 
 # Path to collect data from the Resources folder
 FILE_NAME = "budget_data.csv"
@@ -34,16 +34,15 @@ for r in range(len(budget_list)):
         data_list.append([budget_list[r]["Date"], value])
         change += value
     
-#Sort list to get greatest and least geatest increases in profits.
+#Sort list to get greatest and least greatest increases in profits.
 data_list = sorted(data_list, key=itemgetter(1), reverse = True) 
-print(len(budget_list), total, round(change/len(data_list),2), data_list[0][0], data_list[0][1], data_list[len(data_list)-1] )
 
 #Print report to screen and file.
 FILE_NAME = "financial_analysis.txt"
 FOLDER_NAME = "analysis"
 os_file_path = os.path.join(".", FOLDER_NAME, FILE_NAME)
 
-# Read in the CSV file
+# Open file for write
 with open(os_file_path, 'w', newline = '') as txt_file:
     writer = csv.writer(txt_file)
 
