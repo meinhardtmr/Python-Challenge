@@ -3,7 +3,6 @@
 
 import os
 import csv
-from collections import Counter
 
 #Procedure to write ouput to screen and a file
 def write_line(line, writer):
@@ -21,10 +20,21 @@ os_file_path = os.path.join(".", FOLDER_NAME, FILE_NAME)
 with open(os_file_path, newline = '') as csv_file:
 
     # Split the data on commas
-    election_list = list(csv.DictReader(csv_file, delimiter=','))
+    election_list = csv.reader(csv_file, delimiter=',')
+    
+    #Skip past header record
+    next(election_list)
 
-election_results = Counter(d['Candidate'] for d in election_list)
-total_votes = len(election_list)
+    # Create new dictionary to hold results
+    election_results = {}
+
+    for r in election_list:
+       if r[2] in election_results:
+            election_results[r[2]] += 1
+       else:
+            election_results[r[2]] = 1
+    
+    total_votes = sum(election_results.values())
 
 #Print report to screen and file.
 FILE_NAME = "election_results.txt"
@@ -44,9 +54,9 @@ with open(os_file_path, 'w', newline = '') as txt_file:
     write_line(line, writer)
     line = "----------------------------"
     write_line(line, writer)
-    for r in election_results.items():
-        name,votes = r
-        line = f"{name}: {round(votes/total_votes*100,3)}% ({votes})"
+    
+    for key,value in election_results.items():
+        line = f"{key}: {round(value/total_votes*100,3)}% ({value})"
         write_line(line, writer)
 
     line = "----------------------------"
@@ -55,5 +65,3 @@ with open(os_file_path, 'w', newline = '') as txt_file:
     write_line(line, writer)
     line = "----------------------------"
     write_line(line, writer)
-
-    
